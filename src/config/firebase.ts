@@ -1,28 +1,8 @@
 import admin from "firebase-admin";
-import dotenv from "dotenv";
 import path from "path";
 
-dotenv.config();
-
-let serviceAccount: any;
-
-if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-    try {
-        serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-    } catch (err) {
-        throw new Error("FIREBASE_SERVICE_ACCOUNT is not valid JSON");
-    }
-} else {
-    // Fallback to local service account file at project root
-    const filePath = path.resolve(
-        __dirname,
-        "..",
-        "..",
-        "serviceAccountKey.json",
-    );
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    serviceAccount = require(filePath);
-}
+const filePath = path.resolve(__dirname, "..", "..", "serviceAccountKey.json");
+const serviceAccount = require(filePath);
 
 let firebaseApp: any;
 
