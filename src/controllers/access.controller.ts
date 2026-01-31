@@ -36,7 +36,7 @@ export const login = async (req: Request, res: Response) => {
         });
     }
 
-    const token = await createToken(email);
+    const token = await createToken(userData.uid);
 
     return res.status(200).json({
         status: "success",
