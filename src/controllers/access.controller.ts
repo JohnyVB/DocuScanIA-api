@@ -150,7 +150,7 @@ export const verifyResetPasswordCode = async (req: Request, res: Response) => {
   const isCodeValid = verifyOTP(code, userData.resetPasswordCode);
 
   if (!isCodeValid) {
-    return res.status(401).json({
+    return res.status(200).json({
       status: "error",
       message: "Código de restablecimiento inválido",
     });
