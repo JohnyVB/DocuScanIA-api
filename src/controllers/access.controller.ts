@@ -6,9 +6,9 @@ import bcrypt from "bcryptjs";
 import {
   generateOTP,
   hashOTP,
+  sendEmailVerificationCode,
   verifyOTP,
 } from "../helper/verificationCode.helper";
-import transporter from "../config/nodemailer.config";
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -45,13 +45,13 @@ export const login = async (req: Request, res: Response) => {
   return res.status(200).json({
     status: "success",
     message: "Login exitoso",
+    token,
     userData: {
       uid: userData.uid,
       email: userData.email,
       name: userData.name,
       lastname: userData.lastname,
       resetPasswordCode: userData.resetPasswordCode,
-      token,
     },
   });
 };
@@ -117,14 +117,7 @@ export const sendResetPasswordCode = async (req: Request, res: Response) => {
   const userDoc = userSnapshot.docs[0];
   await userDoc.ref.update({ resetPasswordCode: hashedResetCode });
 
-  // Aquí se enviaría el código por email al usuario (omitir en este ejemplo)
-
-  await transporter.sendMail({
-    from: "DocuScanIA <no-reply@docuscania.com>",
-    to: email,
-    subject: "Código para recuperar contraseña",
-    html: `<h2>Tu código es:</h2><h1>${resetCode}</h1><p>Válido por 10 minutos</p>`,
-  });
+  await sendEmailVerificationCode(email, resetCode);
 
   return res.status(200).json({
     status: "success",
@@ -172,12 +165,10 @@ export const resetPassword = async (req: Request, res: Response) => {
   const { email, newPassword } = req.body;
 
   if (!email || !newPassword) {
-    return res
-      .status(400)
-      .json({
-        status: "error",
-        message: "Email y nueva contraseña son requeridos",
-      });
+    return res.status(400).json({
+      status: "error",
+      message: "Email y nueva contraseña son requeridos",
+    });
   }
 
   const userSnapshot = await firebaseDB
@@ -197,10 +188,8 @@ export const resetPassword = async (req: Request, res: Response) => {
   const userDoc = userSnapshot.docs[0];
   await userDoc.ref.update({ password: hash, resetPasswordCode: "" });
 
-  return res
-    .status(200)
-    .json({
-      status: "success",
-      message: "Contraseña restablecida exitosamente",
-    });
+  return res.status(200).json({
+    status: "success",
+    message: "Contraseña restablecida exitosamente",
+  });
 };
