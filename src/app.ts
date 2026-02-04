@@ -3,7 +3,7 @@ import login from "./routes/access.route";
 import documents from "./routes/documents.route";
 import cors from "cors";
 import dotenv from "dotenv";
-import "./config/firebase";
+import "./config/firebase.config";
 
 dotenv.config();
 
