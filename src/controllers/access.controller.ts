@@ -36,7 +36,7 @@ export const login = async (req: Request, res: Response) => {
 
   if (!passwordMatch) {
     return res
-      .status(401)
+      .status(200)
       .json({ status: "error", message: "Contraseña incorrecta" });
   }
 
@@ -57,12 +57,12 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const newUser = async (req: Request, res: Response) => {
-  const { email, password, name, lastname } = req.body;
+  const { name, lastname, email, password } = req.body;
 
-  if (!email || !password || !name) {
-    return res.status(400).json({
+  if (!email || !password || !name || !lastname) {
+    return res.status(200).json({
       status: "error",
-      message: "Email, contraseña y nombre son requeridos",
+      message: "Email, contraseña, nombre y apellido son requeridos",
     });
   }
 
@@ -70,23 +70,23 @@ export const newUser = async (req: Request, res: Response) => {
   const hash = bcrypt.hashSync(password, salts);
 
   try {
-    const userRecord = await firebaseDB
-      .collection("users")
-      .add({ uid: uuid(), email, password: hash, name, lastname });
+    await firebaseDB.collection("users").add({
+      uid: uuid(),
+      name,
+      lastname,
+      email,
+      password: hash,
+      resetPasswordCode: "",
+    });
 
     return res.status(201).json({
       status: "success",
       message: "Usuario creado exitosamente",
-      userRecord,
     });
-  } catch (error: any) {
+  } catch (error) {
     return res.status(500).json({
       status: "error",
       message: "Error al crear el usuario",
-      error: {
-        code: error.code || "unknown",
-        message: error.message || "Error desconocido",
-      },
     });
   }
 };
