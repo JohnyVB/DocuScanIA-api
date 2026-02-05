@@ -1,36 +1,40 @@
 {
-    "name": "docuscania-api",
-    "version": "1.0.0",
-    "description": "",
-    "main": "app.ts",
-    "scripts": {
-        "dev": "nodemon src/server.ts"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "type": "commonjs",
-    "dependencies": {
-        "bcryptjs": "^3.0.3",
-        "cors": "^2.8.6",
-        "dotenv": "^17.2.3",
-        "express": "^5.2.1",
-        "firebase-admin": "^12.7.0",
-        "jsonwebtoken": "^9.0.3",
-        "nodemailer": "^7.0.13",
-        "uuid": "^13.0.0"
-    },
-    "devDependencies": {
-        "@types/cors": "^2.8.19",
-        "@types/express": "^5.0.6",
-        "@types/jsonwebtoken": "^9.0.10",
-        "@types/node": "^25.0.10",
-        "@types/nodemailer": "^7.0.9",
-        "nodemon": "^3.1.11",
-        "ts-node-dev": "^2.0.0",
-        "typescript": "^5.9.3"
-    },
-    "prettier": {
-        "wordWrap": "off"
-    }
+  "name": "docuscania-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/app.js",
+  "scripts": {
+    "prestart": "npm run build",
+    "start": "node dist/app.js",
+    "start:dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' app.ts",
+    "dev": "ts-node-dev app.ts",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "firebase-admin": "^12.7.0",
+    "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^7.0.13",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.0.10",
+    "@types/nodemailer": "^7.0.9",
+    "nodemon": "^3.1.11",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
+  },
+  "prettier": {
+    "wordWrap": "on"
+  }
 }

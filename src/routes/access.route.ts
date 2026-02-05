@@ -1,10 +1,10 @@
 import { Router } from "express";
 import {
-  newUser,
   login,
+  newUser,
+  resetPassword,
   sendResetPasswordCode,
   verifyResetPasswordCode,
-  resetPassword,
 } from "../controllers/access.controller";
 
 const router = Router();
