@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
+import env from "../config/env";
 
-const SECRET_KEY = process.env.SECRET_KEY || "default_secret_key";
+const SECRET_KEY = env.SECRET_KEY || "default_secret_key";
 
 export const createToken = (uid: string) => {
   return new Promise((resolve, reject) => {
