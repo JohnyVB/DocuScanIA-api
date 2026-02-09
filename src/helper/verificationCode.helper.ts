@@ -30,7 +30,7 @@ export const sendEmailVerificationCode = async (
   html = html.replace("{{CODE}}", code);
 
   await transporter.sendMail({
-    from: "DocuScanIA <no-reply@docuscania.com>",
+    from: "DocuScanAI <no-reply@docuscanai.com>",
     to: email,
     subject: "Código para recuperar contraseña",
     html: html,

@@ -5,7 +5,7 @@ export const uploadToCloudinary = (buffer: Buffer): Promise<any> => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
-        folder: "DocuScanIA",
+        folder: "DocuScanAI",
       },
       (error, result) => {
         if (result) resolve(result);
