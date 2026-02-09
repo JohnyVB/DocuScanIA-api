@@ -8,20 +8,29 @@ import generateResultByGemini from "../helper/gemini.helper";
 import { v4 as uuid } from "uuid";
 
 export const uploadDocument = async (req: Request, res: Response) => {
-  if (!req.file) {
+  const files = req.files as Express.Multer.File[];
+  const uid = req.uid;
+
+  if (files.length < 1) {
     return res.status(400).json({
-      message: "Image is required",
+      message: "Las imagenes son requeridas",
     });
   }
+
   try {
-    const documentBuffer = req.file.buffer;
-    const uid = req.uid;
+    let optimizedArray: Buffer[] = [];
+    for (const file of files) {
+      const fileOptimized = await optimizeForOCR(file.buffer);
+      optimizedArray.push(fileOptimized);
+    }
 
-    const optimized = await optimizeForOCR(documentBuffer);
-    const ocrResult = await ocrSpace(optimized);
-    const parsedText = ocrResult.data.ParsedResults[0].ParsedText.trim();
+    let fullText: string = "";
+    for (const op of optimizedArray) {
+      const text = await ocrSpace(op);
+      fullText += "\n" + text.data.ParsedResults[0].ParsedText.trim();
+    }
 
-    if (parsedText === "" || parsedText.length < 40) {
+    if (fullText === "" || fullText.length < 40) {
       return res.status(200).json({
         success: false,
         message:
@@ -29,15 +38,19 @@ export const uploadDocument = async (req: Request, res: Response) => {
       });
     }
 
-    const langCode = franc(parsedText);
-    const geminiResult = await generateResultByGemini(parsedText, langCode);
+    const langCode = franc(fullText);
+    const geminiResult = await generateResultByGemini(fullText, langCode);
 
-    const cloudinaryResult = await uploadToCloudinary(documentBuffer);
+    let imagesUri: string[] = [];
+    for (const buffer of optimizedArray) {
+      const { secure_url } = await uploadToCloudinary(buffer);
+      imagesUri.push(secure_url);
+    }
 
     const newDoc = {
       uid: uuid(),
       ownerId: uid,
-      imageUri: cloudinaryResult.secure_url,
+      imagesUri: imagesUri,
       createdAt: new Intl.DateTimeFormat("es-ES").format(new Date()),
       data: JSON.parse(geminiResult),
     };

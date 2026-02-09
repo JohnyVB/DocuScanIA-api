@@ -13,7 +13,7 @@ router.get("/allByIdUser", authMiddleware, allDocumentsByIdUser);
 router.post(
   "/uploadDocument",
   authMiddleware,
-  upload.single("image"),
+  upload.array("images", 10),
   uploadDocument,
 );
 
