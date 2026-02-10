@@ -85,12 +85,11 @@ export const allDocumentsByIdUser = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       status: "success",
-      data: documents,
+      documents,
     });
   } catch (error: any) {
     return res.status(500).json({
       status: "error",
-      message: "Error al obtener los documentos",
       error: error.message,
     });
   }

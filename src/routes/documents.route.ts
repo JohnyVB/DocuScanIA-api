@@ -9,12 +9,12 @@ import multer from "multer";
 const upload = multer({ storage: multer.memoryStorage() });
 const router = Router();
 
-router.get("/allByIdUser", authMiddleware, allDocumentsByIdUser);
 router.post(
   "/uploadDocument",
   authMiddleware,
   upload.array("images", 10),
   uploadDocument,
 );
+router.get("/documentsByUserId", authMiddleware, allDocumentsByIdUser);
 
 export default router;
