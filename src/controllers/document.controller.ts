@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
+import { franc } from "franc";
+import { v4 as uuid } from "uuid";
 import { firebaseDB } from "../config/firebase.config";
 import { uploadToCloudinary } from "../helper/cloudinary.helper";
+import generateResultByGemini from "../helper/gemini.helper";
 import { ocrSpace } from "../helper/ocr-space.helper";
 import optimizeForOCR from "../helper/optimizeForOCR.helper";
-import { franc } from "franc";
-import generateResultByGemini from "../helper/gemini.helper";
-import { v4 as uuid } from "uuid";
 
 export const uploadDocument = async (req: Request, res: Response) => {
   const files = req.files as Express.Multer.File[];
@@ -51,7 +51,7 @@ export const uploadDocument = async (req: Request, res: Response) => {
       uid: uuid(),
       ownerId: uid,
       imagesUri: imagesUri,
-      createdAt: new Intl.DateTimeFormat("es-ES").format(new Date()),
+      createdAt: new Date().toISOString(),
       data: JSON.parse(geminiResult),
     };
 
@@ -77,9 +77,18 @@ export const allDocumentsByIdUser = async (req: Request, res: Response) => {
     const documentsSnapshot = await firebaseDB
       .collection("documents")
       .where("ownerId", "==", uid)
+      .orderBy("createdAt", "desc")
       .get();
 
+    if (documentsSnapshot.empty) {
+      return res.status(200).json({
+        status: "success",
+        documents: [],
+      });
+    }
+
     const documents = documentsSnapshot.docs.map((doc) => ({
+      firestoreId: doc.id,
       ...doc.data(),
     }));
 
