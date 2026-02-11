@@ -9,7 +9,7 @@ import { DocumenTypes } from "../types/document.type";
 
 export const uploadDocument = async (req: Request, res: Response) => {
   const files = req.files as Express.Multer.File[];
-  const firestoreId = req.firestoreId;
+  const userFirestoreId = req.firestoreId;
 
   if (files.length < 1) {
     return res.status(400).json({
@@ -48,19 +48,22 @@ export const uploadDocument = async (req: Request, res: Response) => {
     }
 
     const newDoc = {
-      ownerId: firestoreId,
+      ownerId: userFirestoreId,
       imagesUri: imagesUri,
       createdAt: new Date().toISOString(),
       show: true,
       data: JSON.parse(geminiResult),
     };
 
-    await firebaseDB.collection("documents").add(newDoc);
+    const docRef = await firebaseDB.collection("documents").add(newDoc);
 
     return res.status(201).json({
       status: "success",
       message: "Documento subido correctamente",
-      newDoc,
+      newDoc: {
+        firestoreId: docRef.id,
+        ...newDoc,
+      },
     });
   } catch (error: any) {
     return res.status(500).json({
