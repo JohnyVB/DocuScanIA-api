@@ -5,10 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyToken = exports.createToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const SECRET_KEY = process.env.SECRET_KEY || "default_secret_key";
-const createToken = (uid) => {
+const env_1 = __importDefault(require("../config/env"));
+const SECRET_KEY = env_1.default.SECRET_KEY || "default_secret_key";
+const createToken = (firestoreId) => {
     return new Promise((resolve, reject) => {
-        jsonwebtoken_1.default.sign({ uid }, SECRET_KEY, { expiresIn: "12h" }, (err, token) => {
+        jsonwebtoken_1.default.sign({ firestoreId }, SECRET_KEY, { expiresIn: "12h" }, (err, token) => {
             if (err) {
                 reject("Failed to generate the token");
             }

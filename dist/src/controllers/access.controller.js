@@ -4,10 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resetPassword = exports.verifyResetPasswordCode = exports.sendResetPasswordCode = exports.newUser = exports.login = void 0;
-const jwt_helper_1 = require("../helper/jwt.helper");
-const firebase_config_1 = require("../config/firebase.config");
-const uuid_1 = require("uuid");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const firebase_config_1 = require("../config/firebase.config");
+const jwt_helper_1 = require("../helper/jwt.helper");
 const verificationCode_helper_1 = require("../helper/verificationCode.helper");
 const login = async (req, res) => {
     const { email, password } = req.body;
@@ -26,20 +25,23 @@ const login = async (req, res) => {
             .status(404)
             .json({ status: "error", message: "Usuario no encontrado" });
     }
-    const userData = userSnapshot.docs[0].data();
+    const userData = userSnapshot.docs.map((doc) => ({
+        firestoreId: doc.id,
+        ...doc.data(),
+    }))[0];
     const passwordMatch = bcryptjs_1.default.compareSync(password, userData.password);
     if (!passwordMatch) {
         return res
             .status(200)
             .json({ status: "error", message: "Contraseña incorrecta" });
     }
-    const token = await (0, jwt_helper_1.createToken)(userData.uid);
+    const token = await (0, jwt_helper_1.createToken)(userData.firestoreId);
     return res.status(200).json({
         status: "success",
         message: "Login exitoso",
         token,
         userData: {
-            uid: userData.uid,
+            firestoreId: userData.firestoreId,
             email: userData.email,
             name: userData.name,
             lastname: userData.lastname,
@@ -60,7 +62,6 @@ const newUser = async (req, res) => {
     const hash = bcryptjs_1.default.hashSync(password, salts);
     try {
         await firebase_config_1.firebaseDB.collection("users").add({
-            uid: (0, uuid_1.v4)(),
             name,
             lastname,
             email,

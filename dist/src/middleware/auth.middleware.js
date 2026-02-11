@@ -23,7 +23,7 @@ const authMiddleware = async (req, res, next) => {
         // Verificar el token
         const decoded = (await (0, jwt_helper_1.verifyToken)(token));
         // Guardar el uid en el request para usarlo en los controladores
-        req.uid = decoded.uid;
+        req.firestoreId = decoded.firestoreId;
         next();
     }
     catch (error) {

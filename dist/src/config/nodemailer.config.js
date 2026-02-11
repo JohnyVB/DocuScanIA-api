@@ -4,11 +4,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const nodemailer_1 = __importDefault(require("nodemailer"));
+const env_1 = __importDefault(require("./env"));
 const transporter = nodemailer_1.default.createTransport({
     service: "gmail",
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: env_1.default.EMAIL_USER,
+        pass: env_1.default.EMAIL_PASS,
     },
 });
 exports.default = transporter;
