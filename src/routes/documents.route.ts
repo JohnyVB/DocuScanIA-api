@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleware/auth.middleware";
 import {
-  allDocumentsByIdUser,
+  allDocumentsByUserId,
+  hideDocumentByDocumentUid,
   uploadDocument,
 } from "../controllers/document.controller";
 import multer from "multer";
@@ -15,6 +16,11 @@ router.post(
   upload.array("images", 10),
   uploadDocument,
 );
-router.get("/documentsByUserId", authMiddleware, allDocumentsByIdUser);
+router.get("/documentsByUserId", authMiddleware, allDocumentsByUserId);
+router.post(
+  "/hideDocumentByDocumentUid",
+  authMiddleware,
+  hideDocumentByDocumentUid,
+);
 
 export default router;

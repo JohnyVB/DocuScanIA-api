@@ -3,15 +3,20 @@ import env from "../config/env";
 
 const SECRET_KEY = env.SECRET_KEY || "default_secret_key";
 
-export const createToken = (uid: string) => {
+export const createToken = (firestoreId: string) => {
   return new Promise((resolve, reject) => {
-    jwt.sign({ uid }, SECRET_KEY, { expiresIn: "12h" }, (err, token) => {
-      if (err) {
-        reject("Failed to generate the token");
-      } else {
-        resolve(token);
-      }
-    });
+    jwt.sign(
+      { firestoreId },
+      SECRET_KEY,
+      { expiresIn: "12h" },
+      (err, token) => {
+        if (err) {
+          reject("Failed to generate the token");
+        } else {
+          resolve(token);
+        }
+      },
+    );
   });
 };
 

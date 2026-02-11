@@ -1,14 +1,14 @@
-import { Request, Response } from "express";
-import { createToken } from "../helper/jwt.helper";
-import { firebaseDB } from "../config/firebase.config";
-import { v4 as uuid } from "uuid";
 import bcrypt from "bcryptjs";
+import { Request, Response } from "express";
+import { firebaseDB } from "../config/firebase.config";
+import { createToken } from "../helper/jwt.helper";
 import {
   generateOTP,
   hashOTP,
   sendEmailVerificationCode,
   verifyOTP,
 } from "../helper/verificationCode.helper";
+import { UserData } from "../types/user.type";
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -31,7 +31,11 @@ export const login = async (req: Request, res: Response) => {
       .json({ status: "error", message: "Usuario no encontrado" });
   }
 
-  const userData = userSnapshot.docs[0].data();
+  const userData = userSnapshot.docs.map((doc) => ({
+    firestoreId: doc.id,
+    ...(doc.data() as Omit<UserData, "firestoreId">),
+  }))[0];
+
   const passwordMatch = bcrypt.compareSync(password, userData.password);
 
   if (!passwordMatch) {
@@ -40,14 +44,14 @@ export const login = async (req: Request, res: Response) => {
       .json({ status: "error", message: "Contraseña incorrecta" });
   }
 
-  const token = await createToken(userData.uid);
+  const token = await createToken(userData.firestoreId);
 
   return res.status(200).json({
     status: "success",
     message: "Login exitoso",
     token,
     userData: {
-      uid: userData.uid,
+      firestoreId: userData.firestoreId,
       email: userData.email,
       name: userData.name,
       lastname: userData.lastname,
@@ -71,7 +75,6 @@ export const newUser = async (req: Request, res: Response) => {
 
   try {
     await firebaseDB.collection("users").add({
-      uid: uuid(),
       name,
       lastname,
       email,
