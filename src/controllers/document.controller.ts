@@ -5,6 +5,7 @@ import { uploadToCloudinary } from "../helper/cloudinary.helper";
 import generateResultByGemini from "../helper/gemini.helper";
 import { ocrSpace } from "../helper/ocr-space.helper";
 import optimizeForOCR from "../helper/optimizeForOCR.helper";
+import { DocumenTypes } from "../types/document.type";
 
 export const uploadDocument = async (req: Request, res: Response) => {
   const files = req.files as Express.Multer.File[];
@@ -89,7 +90,7 @@ export const allDocumentsByUserId = async (req: Request, res: Response) => {
 
     const documents = documentsSnapshot.docs.map((doc) => ({
       firestoreId: doc.id,
-      ...doc.data(),
+      ...(doc.data() as Omit<DocumenTypes, "firestoreId">),
     }));
 
     return res.status(200).json({
