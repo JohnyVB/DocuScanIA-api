@@ -109,23 +109,18 @@ export const allDocumentsByUserId = async (req: Request, res: Response) => {
   }
 };
 
-export const hideDocumentByDocumentUid = async (
-  req: Request,
-  res: Response,
-) => {
-  const firestoreId = req.firestoreId;
-  const { documentUid } = req.body;
+export const hideDocumentById = async (req: Request, res: Response) => {
+  const { documentId } = req.body;
 
-  if (!firestoreId || !documentUid) {
+  if (!documentId) {
     return res.status(400).json({
       status: "error",
-      message:
-        "el firestoreId del documento y el uid del usuario son requeridos",
+      message: "El documentId es requerido",
     });
   }
 
   try {
-    await firebaseDB.collection("documents").doc(firestoreId).update({
+    await firebaseDB.collection("documents").doc(documentId).update({
       show: false,
     });
 
@@ -133,5 +128,11 @@ export const hideDocumentByDocumentUid = async (
       status: "success",
       message: "Documento modificado",
     });
-  } catch (error) {}
+  } catch (error: any) {
+    console.log("Error hideDocumentById: ", error);
+    return res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
 };

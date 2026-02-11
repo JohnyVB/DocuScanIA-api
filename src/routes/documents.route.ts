@@ -2,7 +2,7 @@ import { Router } from "express";
 import { authMiddleware } from "../middleware/auth.middleware";
 import {
   allDocumentsByUserId,
-  hideDocumentByDocumentUid,
+  hideDocumentById,
   uploadDocument,
 } from "../controllers/document.controller";
 import multer from "multer";
@@ -17,10 +17,6 @@ router.post(
   uploadDocument,
 );
 router.get("/documentsByUserId", authMiddleware, allDocumentsByUserId);
-router.post(
-  "/hideDocumentByDocumentUid",
-  authMiddleware,
-  hideDocumentByDocumentUid,
-);
+router.put("/hideDocumentById", authMiddleware, hideDocumentById);
 
 export default router;
