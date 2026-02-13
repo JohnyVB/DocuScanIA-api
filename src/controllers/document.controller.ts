@@ -5,7 +5,7 @@ import { uploadToCloudinary } from "../helper/cloudinary.helper";
 import generateResultByGemini from "../helper/gemini.helper";
 import { ocrSpace } from "../helper/ocr-space.helper";
 import optimizeForOCR from "../helper/optimizeForOCR.helper";
-import { DocumenTypes } from "../types/document.type";
+import { DocumentTypes } from "../types/document.type";
 
 export const uploadDocument = async (req: Request, res: Response) => {
   const files = req.files as Express.Multer.File[];
@@ -13,7 +13,7 @@ export const uploadDocument = async (req: Request, res: Response) => {
 
   if (files.length < 1) {
     return res.status(400).json({
-      message: "Las imagenes son requeridas",
+      message: "Las imágenes son requeridas",
     });
   }
 
@@ -93,7 +93,7 @@ export const allDocumentsByUserId = async (req: Request, res: Response) => {
 
     const documents = documentsSnapshot.docs.map((doc) => ({
       firestoreId: doc.id,
-      ...(doc.data() as Omit<DocumenTypes, "firestoreId">),
+      ...(doc.data() as Omit<DocumentTypes, "firestoreId">),
     }));
 
     return res.status(200).json({

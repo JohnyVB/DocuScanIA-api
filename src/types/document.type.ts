@@ -21,7 +21,7 @@ export type DocumentData = {
   importance_level: string;
 };
 
-export type DocumenTypes = {
+export type DocumentTypes = {
   firestoreId: string;
   ownerId: string;
   imagesUri: string[];

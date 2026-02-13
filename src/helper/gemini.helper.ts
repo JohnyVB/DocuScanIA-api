@@ -30,16 +30,17 @@ const generateResultByGemini = async (parsedText: string, langCode: string) => {
     }
 
     Reglas:
-    - "tipo_documento": nombre específico del documento (ej: Certificado de empadronamiento)
-    - "categoria": usar una de:
-      "identidad", "residencia", "legal", "financiero", "salud", "educacion", "otro"
+    - "document_type": nombre específico del documento (ej: Certificado de empadronamiento)
+    - "category": usar una de:
+      "identidad", "residencia", "legal", "financiero", "salud", "educación", "otro"
     - Extraer todas las fechas relevantes.
     - Si el documento implica que el usuario debe realizar algún trámite, "requiere_accion" debe ser true.
-    - "nivel_importancia":
-      alto → documentos legales, multas, permisos
-      medio → certificados administrativos
-      bajo → informativos
+    - "importance_level":
+      high → documentos legales, multas, permisos
+      medium → certificados administrativos
+      low → informativos
     - Responder SOLO el JSON sin texto adicional.
+    - "document_number": puede ser el numero de documento nacional o del pasaporte
 
     Documento OCR:
     ${parsedText}
