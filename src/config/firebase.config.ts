@@ -20,5 +20,4 @@ try {
 }
 
 export const firebaseDB = admin.firestore(firebaseApp);
-export const firebaseAuth = admin.auth(firebaseApp);
 export default admin;
