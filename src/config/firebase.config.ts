@@ -1,21 +1,7 @@
 import admin from "firebase-admin";
-import dotenv from "dotenv";
+import env from "./env";
 
-dotenv.config();
-
-let envVar = process.env.FIREBASE_SERVICE_ACCOUNT;
-if (!envVar) {
-  throw new Error("FIREBASE_SERVICE_ACCOUNT environment variable is not set");
-}
-
-let serviceAccount: any;
-try {
-  serviceAccount = JSON.parse(envVar);
-} catch (err: any) {
-  throw new Error(
-    "Invalid JSON in FIREBASE_SERVICE_ACCOUNT environment variable",
-  );
-}
+const serviceAccount = JSON.parse(env.FIREBASE_SERVICE_ACCOUNT || "{}");
 
 let firebaseApp: any;
 
@@ -24,7 +10,7 @@ try {
   if (existingApps.length === 0) {
     firebaseApp = admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
-      projectId: serviceAccount.project_id || process.env.FIREBASE_PROJECT_ID,
+      projectId: serviceAccount.project_id,
     });
   } else {
     firebaseApp = existingApps[0];
